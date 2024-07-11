@@ -1,0 +1,55 @@
+<resources>
+    <string name="app_name">Tactical store</string>
+    <string name="thumbnail_content_des">Thumbnail</string>
+    <string name="shop">Shop</string>
+    <string name="menu">menu</string>
+    <string name="cart">Cart</string>
+    <string name="back">Back</string>
+    <string name="search">Search</string>
+    <string name="call">call</string>
+    <string name="user_field">Email</string>
+    <string name="password_field">Password</string>
+    <string name="sign_in_button">Sign in</string>
+    <string name="sign_up_button">Sign up</string>
+    <string name="sign_in_suggest">Already have an account?</string>
+    <string name="sign_up_suggest">No account yet?</string>
+    <string name="best_sellers">Best seller</string>
+    <string name="show_all">Show all</string>
+    <string name="des">
+        An explosive weapon typically thrown by hand (also called hand grenade). A modern hand grenade generally consists of...
+    </string>
+    <string name="add_to_cart">Add to cart</string>
+    <string name="log_out">Log out</string>
+    <string name="settings">Settings</string>
+    <string name="profile">Profile</string>
+
+    <string-array name="label">
+        <item>Goggles</item>
+        <item>Grenade</item>
+        <item>Optic</item>
+        <item>Med kit</item>
+        <item>Carrier</item>
+    </string-array>
+
+    <string-array name="description">
+        <item></item>
+        <item>Emergency response personnel use tactical eye wear to protect their eyes when working in the field. Common hazards that responders use tactical spectacles and goggles to protect against include shrapnel, blunt objects, chemicals, and blood and other biohazards.</item>
+        <item>An explosive weapon typically thrown by hand (also called hand grenade). A modern hand grenade generally consists of an explosive charge ("filler"), a detonator mechanism, an internal striker to trigger the detonator, an arming safety secured by a transport safety. </item>
+        <item>These scopes extend the standard engagement range for troops in ground combat and usually have lower magnification levels. They have simple reticles that help you acquire targets quickly at a close to medium range.</item>
+        <item>Dressings and bandages (gauze role, sterile gauze pads, eye pad, roll of adhesive tape, elastic bandage for sprains, sterile cotton balls and swabs) Over-the-counter medicine for cuts, burns, and injuries. </item>
+        <item>A type of body armor system designed to hold ballistic plates, which are inserted into pockets on the front and back of the carrier. These plates, typically made of ceramic, steel, or composite materials, offer protection against bullets and other ballistic threats.</item>
+    </string-array>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Username</string>
+    <string name="nav_header_subtitle">sample@gmail.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="categories">Categories</string>
+    <string name="trending">Trending</string>
+    <string name="explore">Explore</string>
+    <string name="my_cart">My Cart</string>
+    <string name="the_cart_is_empty">The cart is empty :(</string>
+    <string name="chat">Chat</string>
+</resources>
