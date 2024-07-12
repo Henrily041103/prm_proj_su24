@@ -52,4 +52,5 @@
     <string name="my_cart">My Cart</string>
     <string name="the_cart_is_empty">The cart is empty :(</string>
     <string name="chat">Chat</string>
+    <string name="contact">Contact</string>
 </resources>

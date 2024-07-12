@@ -1,95 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent"
+    android:padding="10dp">
 
-    <LinearLayout
+    <ImageButton
+        android:id="@+id/back"
+        style="@style/bar_component"
+        android:contentDescription="@string/back"
+        android:src="@drawable/arrow_back" />
+
+    <ImageButton
+        android:id="@+id/cart"
+        style="@style/bar_component"
+        android:layout_alignParentEnd="true"
+        android:contentDescription="@string/menu"
+        android:src="@drawable/cart" />
+
+    <ImageView
+        android:id="@+id/thumbnail"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingHorizontal="15dp"
-        android:background="@android:color/transparent">
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/thumbnail_content_des"
+        android:src="@drawable/thumb" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:paddingHorizontal="5dp"
-            android:background="@android:color/transparent"
-            android:layout_marginTop="10dp">
+    <TextView
+        android:id="@+id/label"
+        style="@style/detail_text_view"
+        android:layout_below="@+id/thumbnail"
+        android:fontFamily="sans-serif-medium"
+        android:text="STV-380"
+        android:textColor="@color/black"
+        android:textSize="30sp" />
 
-            <ImageButton
-                android:id="@+id/back"
-                style="@style/bar_component"
-                android:contentDescription="@string/back"
-                android:layout_marginStart="15dp"
-                android:src="@drawable/arrow_back"/>
+    <TextView
+        android:id="@+id/price"
+        style="@style/detail_text_view"
+        android:layout_below="@+id/thumbnail"
+        android:layout_alignParentEnd="true"
+        android:text="200 USD"
+        android:textSize="25sp" />
 
-            <ImageButton
-                android:id="@+id/cart"
-                style="@style/bar_component"
-                android:contentDescription="@string/menu"
-                android:src="@drawable/cart"
-                android:layout_marginStart="315dp"/>
+    <TextView
+        android:id="@+id/category"
+        style="@style/detail_text_view"
+        android:layout_below="@+id/price"
+        android:layout_marginTop="10dp"
+        android:text="Rifle"
+        android:textColor="#8E8E8E" />
 
-        </LinearLayout>
+    <TextView
+        android:id="@+id/des"
+        style="@style/detail_text_view"
+        android:layout_below="@+id/category"
+        android:layout_marginTop="15dp"
+        android:text="@string/des" />
 
-        <ImageView
-            android:id="@+id/thumbnail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:contentDescription="@string/thumbnail_content_des"
-            android:src="@drawable/thumb" />
+    <TextView
+        android:id="@+id/store"
+        style="@style/detail_text_view"
+        android:layout_below="@+id/des"
+        android:layout_marginTop="10dp"
+        android:text="Store: SS0" />
 
-        <TextView
-            android:id="@+id/label"
-            style="@style/detail_text_view"
-            android:text="STV-380"
-            android:textSize="30sp"
-            android:textColor="@color/black"
-            android:fontFamily="sans-serif-medium"/>
-        <TextView
-            android:id="@+id/price"
-            android:text="200 USD"
-            android:textColor="#8E8E8E"
-            android:textSize="20sp"
-            style="@style/detail_text_view"/>
+    <ImageButton
+        android:layout_toEndOf="@+id/store"
+        android:id="@+id/contact_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/des"
+        android:src="@drawable/chat_icon"
+        tools:ignore="ContentDescription" />
+
+    <RelativeLayout
+        android:id="@+id/bottom_layout"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_alignParentBottom="true"
+        android:padding="5dp">
 
         <Button
             android:id="@+id/add_to_cart_btn"
-            android:text="@string/add_to_cart"
-            android:layout_marginTop="15dp"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:backgroundTint="@color/dark_gray"/>
+            android:layout_marginTop="15dp"
+            android:backgroundTint="@color/dark_gray"
+            android:text="@string/add_to_cart" />
 
         <TextView
             android:id="@+id/cart_notice"
+            style="@style/detail_text_view"
+            android:layout_marginTop="15dp"
             android:text="Added to cart"
             android:textAlignment="center"
-            android:layout_marginTop="15dp"
             android:textSize="20sp"
-            android:visibility="gone"
-            style="@style/detail_text_view"/>
+            android:visibility="gone" />
 
-        <TextView
-            android:id="@+id/des"
-            android:text="@string/des"
-            android:layout_marginTop="15dp"
-            style="@style/detail_text_view"/>
-        <TextView
-            android:id="@+id/store"
-            android:text="Store: SS0"
-            android:layout_marginTop="10dp"
-            style="@style/detail_text_view"/>
-        <TextView
-            android:id="@+id/stock"
-            android:text="Stock"
-            android:layout_marginTop="10dp"
-            style="@style/detail_text_view"/>
-    </LinearLayout>
+    </RelativeLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>
