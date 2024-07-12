@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".Controller.ShopActivity">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -22,22 +21,37 @@
                 android:id="@+id/home_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:src="@drawable/home_icon"
-                android:background="@android:color/transparent"/>
+                android:background="@android:color/transparent"
+                android:src="@drawable/home_icon" />
 
             <ImageButton
                 android:id="@+id/cart"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:background="@android:color/transparent"
                 android:layout_gravity="end"
                 android:layout_marginHorizontal="20dp"
+                android:background="@android:color/transparent"
                 android:src="@drawable/cart" />
 
-            <androidx.appcompat.widget.SearchView
+            <EditText
+                android:id="@+id/search_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layoutDirection="rtl" />
+                android:background="@android:color/transparent"
+                android:hint="@string/search"
+                android:inputType="text"
+                android:paddingStart="10dp"
+                android:paddingEnd="50dp" />
+
+            <ImageButton
+                android:id="@+id/filter_btn"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="end"
+                android:layout_marginEnd="10dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/baseline_filter_alt_24" />
+
         </androidx.appcompat.widget.Toolbar>
 
         <LinearLayout
@@ -66,11 +80,11 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
                 android:text="@string/trending"
                 android:textColor="@color/black"
                 android:textSize="20sp"
-                android:textStyle="bold"
-                android:layout_marginTop="20dp"/>
+                android:textStyle="bold" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/product_recycler_view"
