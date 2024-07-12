@@ -31,10 +31,12 @@ public class CartItemAdapter extends RecyclerView.Adapter<CartItemAdapter.MyView
 
     Context context;
     ArrayList<CartItem> cartItemsList;
+    ImageButton clearCartBtn;
 
-    public CartItemAdapter(Context context, ArrayList<CartItem> cartItemsList) {
+    public CartItemAdapter(Context context, ArrayList<CartItem> cartItemsList, ImageButton clearCartBtn) {
         this.context = context;
         this.cartItemsList = cartItemsList;
+        this.clearCartBtn = clearCartBtn;
     }
 
     @NonNull
@@ -61,15 +63,17 @@ public class CartItemAdapter extends RecyclerView.Adapter<CartItemAdapter.MyView
             Cart cart = new Cart();
             cart.setItems(cartItemsList);
             SharedPreferences.Editor editor = sf.edit();
-            if (cartItemsList.isEmpty()) editor.putString("Cart", "empty");
-            else {
+            if (cartItemsList.isEmpty()) {
+                editor.putString("Cart", "empty");
+                clearCartBtn.setVisibility(View.GONE);
+            } else {
                 Gson gson = new Gson();
                 String json = gson.toJson(cart);
                 editor.putString("Cart", json);
             }
             editor.apply();
             notifyItemRemoved(removedIndex);
-            notifyItemRangeChanged(removedIndex, cartItemsList.size()-removedIndex);
+            notifyItemRangeChanged(removedIndex, cartItemsList.size() - removedIndex);
         });
     }
 
