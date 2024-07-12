@@ -25,11 +25,13 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.auth.User;
 import com.jingyuan.capstone.DTO.Firebase.UserDTO;
 import com.jingyuan.capstone.R;
+import com.jingyuan.capstone.Utility.FirestoreUtilities;
 
 public class LoginActivity extends AppCompatActivity {
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    public EditText usernameInputField;
-    public EditText passwordInputField;
+    EditText usernameInputField;
+    EditText passwordInputField;
+    FirestoreUtilities util = new FirestoreUtilities();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,10 +48,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-//        testUpdateUI();
-        Intent i = new Intent(getApplicationContext(), ChatActivity.class);
-        startActivity(i);
-        finish();
+        //testUpdateUI();
     }
 
     public void onSignUpBtnClick(View v) {
@@ -86,19 +85,16 @@ public class LoginActivity extends AppCompatActivity {
 
     private void createAccount(String email, String password) {
         mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(LoginActivity.this, "Account created successfully.",
-                                    Toast.LENGTH_SHORT).show();
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            assert user != null;
-                            updateUI(user);
-                        } else {
-                            Toast.makeText(LoginActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                        }
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(LoginActivity.this, "Account created successfully.",
+                                Toast.LENGTH_SHORT).show();
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        assert user != null;
+                        updateUI(user);
+                    } else {
+                        Toast.makeText(LoginActivity.this, "Authentication failed.",
+                                Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -120,23 +116,20 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void updateUI(FirebaseUser user) {
-        Intent i = new Intent(getApplicationContext(), HomeActivity.class);
         String uid = user.getUid();
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        DocumentReference docRef = db.collection("User").document(uid);
+        DocumentReference docRef = util.getUserRef(uid);
         docRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 DocumentSnapshot snap = task.getResult();
                 UserDTO userDTO = snap.toObject(UserDTO.class);
                 assert userDTO != null;
-
                 SharedPreferences sf = getSharedPreferences("my_prefs", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sf.edit();
                 editor.putString("username", userDTO.getUsername());
                 editor.putString("email", userDTO.getEmail());
                 editor.putString("pfp", userDTO.getPfp());
                 editor.apply();
-
+                Intent i = new Intent(getApplicationContext(), HomeActivity.class);
                 startActivity(i);
                 finish();
             }

@@ -33,7 +33,6 @@ public class ChatMessageAdapter extends FirestoreRecyclerAdapter<ChatMessageFDTO
         return new ChatMessageAdapter.MyViewHolder(view);
     }
 
-
     @Override
     protected void onBindViewHolder(@NonNull MyViewHolder holder, int position, @NonNull ChatMessageFDTO messageDTO) {
         String message = messageDTO.getMessage();
