@@ -5,6 +5,7 @@ public class UserDTO {
     private String pfp;
     private String email;
     private String fcmtoken;
+    private String role;
 
     public UserDTO() {
     }
@@ -39,5 +40,13 @@ public class UserDTO {
 
     public void setFcmtoken(String fcmtoken) {
         this.fcmtoken = fcmtoken;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }

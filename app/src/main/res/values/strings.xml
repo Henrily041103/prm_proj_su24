@@ -53,4 +53,8 @@
     <string name="the_cart_is_empty">The cart is empty :(</string>
     <string name="chat">Chat</string>
     <string name="contact">Contact</string>
+    <string name="product_name">Product name</string>
+    <string name="product_description">Description</string>
+    <string name="product_price">Price (USD)</string>
+    <string name="product_stock">Available stock</string>
 </resources>

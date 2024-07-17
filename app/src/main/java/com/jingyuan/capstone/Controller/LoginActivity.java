@@ -48,7 +48,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        //testUpdateUI();
+        testUpdateUIAdmin();
     }
 
     public void onSignUpBtnClick(View v) {
@@ -129,8 +129,14 @@ public class LoginActivity extends AppCompatActivity {
                 editor.putString("email", userDTO.getEmail());
                 editor.putString("pfp", userDTO.getPfp());
                 editor.apply();
-                Intent i = new Intent(getApplicationContext(), HomeActivity.class);
-                startActivity(i);
+                if (userDTO.getRole().equalsIgnoreCase("admin")) {
+                    Intent i = new Intent(getApplicationContext(), AdminHomeActivity.class);
+                    startActivity(i);
+                }
+                else {
+                    Intent i = new Intent(getApplicationContext(), HomeActivity.class);
+                    startActivity(i);
+                }
                 finish();
             }
         });
@@ -144,6 +150,18 @@ public class LoginActivity extends AppCompatActivity {
         editor.putString("pfp", "https://firebasestorage.googleapis.com/v0/b/capstone-c62ee.appspot.com/o/sam.jpg?alt=media");
         editor.apply();
         Intent i = new Intent(getApplicationContext(), HomeActivity.class);
+        startActivity(i);
+        finish();
+    }
+
+    private void testUpdateUIAdmin() {
+        SharedPreferences sf = getSharedPreferences("my_prefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sf.edit();
+        editor.putString("username", "Firefly");
+        editor.putString("email", "firefly@gmail.com");
+        editor.putString("pfp", "https://firebasestorage.googleapis.com/v0/b/capstone-c62ee.appspot.com/o/sam.jpg?alt=media");
+        editor.apply();
+        Intent i = new Intent(getApplicationContext(), AdminHomeActivity.class);
         startActivity(i);
         finish();
     }
