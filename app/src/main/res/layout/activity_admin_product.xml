@@ -17,6 +17,14 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <ImageButton
+            android:id="@+id/back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:src="@drawable/arrow_back"
+            tools:ignore="ContentDescription" />
+
         <com.google.android.material.textfield.TextInputLayout
             style="@style/label"
             android:hint="@string/product_name">
@@ -68,6 +76,6 @@
         android:layout_alignParentBottom="true"
         android:layout_marginTop="15dp"
         android:backgroundTint="@color/dark_gray"
-        android:text="@string/add_to_cart" />
+        android:text="@string/add_product" />
 
 </RelativeLayout>

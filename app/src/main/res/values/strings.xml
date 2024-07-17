@@ -57,4 +57,5 @@
     <string name="product_description">Description</string>
     <string name="product_price">Price (USD)</string>
     <string name="product_stock">Available stock</string>
+    <string name="add_product">Add Product</string>
 </resources>
