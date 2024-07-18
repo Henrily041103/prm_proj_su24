@@ -26,6 +26,7 @@ public class CartActivity extends AppCompatActivity {
     SharedPreferences sf;
     RecyclerView cartItems;
     ImageButton backBtn;
+    ImageButton clearCartBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +35,7 @@ public class CartActivity extends AppCompatActivity {
         cartStatusNotice = findViewById(R.id.cart_status_display);
         cartItems = findViewById(R.id.cart_items_list);
         backBtn = findViewById(R.id.back);
+        clearCartBtn = findViewById(R.id.clear_cart);
     }
 
     @Override
@@ -43,19 +45,29 @@ public class CartActivity extends AppCompatActivity {
         String plainJsonString = sf.getString("Cart", "empty");
         if (plainJsonString.equalsIgnoreCase("empty")) {
             cartStatusNotice.setVisibility(View.VISIBLE);
+            clearCartBtn.setVisibility(View.GONE);
         } else {
             cartItems.setVisibility(View.VISIBLE);
             Gson gson = new Gson();
             Cart cart = gson.fromJson(plainJsonString, Cart.class);
             ArrayList<CartItem> cartList = cart.getItems();
-            CartItemAdapter adapter = new CartItemAdapter(this, cartList);
+            CartItemAdapter adapter = new CartItemAdapter(this, cartList, clearCartBtn);
             cartItems.setAdapter(adapter);
             cartItems.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+            clearCartBtn.setVisibility(View.VISIBLE);
+            clearCartBtn.setOnClickListener(v -> {
+                SharedPreferences.Editor editor = sf.edit();
+                editor.putString("Cart", "empty");
+                editor.apply();
+                cartList.clear();
+                adapter.notifyDataSetChanged();
+                cartStatusNotice.setVisibility(View.VISIBLE);
+                clearCartBtn.setVisibility(View.GONE);
+            });
         }
         backBtn.setOnClickListener(v -> {
             Intent i = new Intent(CartActivity.this, HomeActivity.class);
             startActivity(i);
         });
     }
-
 }

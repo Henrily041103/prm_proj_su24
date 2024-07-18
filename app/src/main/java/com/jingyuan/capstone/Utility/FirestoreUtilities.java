@@ -14,6 +14,10 @@ public class FirestoreUtilities {
         return firestore.collection("Chatroom").document(chatroomDoc);
     }
 
+    public DocumentReference getUserRef(String userDoc) {
+        return firestore.collection("User").document(userDoc);
+    }
+
     public CollectionReference getMessagesCollection(String chatroomDoc) {
         return getChatRoomRef(chatroomDoc).collection("Chat");
     }

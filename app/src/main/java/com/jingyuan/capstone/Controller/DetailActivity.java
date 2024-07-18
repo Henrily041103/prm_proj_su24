@@ -40,11 +40,12 @@ public class DetailActivity extends AppCompatActivity {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     SharedPreferences sf;
     ProductFDTO productFDTO;
-    TextView label, price, des, stock, store, cart_notice;
+    TextView label, price, des, store, cart_notice;
     ImageView thumbnail;
-    ImageButton backBtn, cartBtn;
+    ImageButton backBtn, cartBtn, contactBtn;
     Button addToCartBtn;
     String docData, phoneNumber;
+    StoreFDTO storeFDTO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,11 +57,11 @@ public class DetailActivity extends AppCompatActivity {
         label = findViewById(R.id.label);
         price = findViewById(R.id.price);
         des = findViewById(R.id.des);
-        stock = findViewById(R.id.stock);
         store = findViewById(R.id.store);
         backBtn = findViewById(R.id.back);
         thumbnail = findViewById(R.id.thumbnail);
         addToCartBtn = findViewById(R.id.add_to_cart_btn);
+        contactBtn = findViewById(R.id.contact_btn);
         cartBtn = findViewById(R.id.cart);
         cart_notice = findViewById(R.id.cart_notice);
         Intent i = getIntent();
@@ -81,10 +82,9 @@ public class DetailActivity extends AppCompatActivity {
                     assert productFDTO != null;
                     label.setText(productFDTO.getName());
                     price.setText(productFDTO.getPrice() + " USD");
-                    stock.setText("Stock available: " + productFDTO.getStock());
                     des.setText(productFDTO.getDescription());
                     Glide.with(DetailActivity.this).load(productFDTO.getThumbnail()).into(thumbnail);
-                    StoreFDTO storeFDTO = productFDTO.getStore();
+                    storeFDTO = productFDTO.getStore();
                     phoneNumber = storeFDTO.getPhone();
                     store.setText("Store: " + storeFDTO.getName());
                 }
@@ -104,6 +104,12 @@ public class DetailActivity extends AppCompatActivity {
             Intent i = new Intent(DetailActivity.this, CartActivity.class);
             startActivity(i);
             finish();
+        });
+
+        contactBtn.setOnClickListener(v -> {
+            Intent i = new Intent(DetailActivity.this, ChatActivity.class);
+            i.putExtra("shopDoc", productFDTO.getStore().getDoc());
+            startActivity(i);
         });
     }
 
