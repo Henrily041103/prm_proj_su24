@@ -15,6 +15,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.jingyuan.capstone.DTO.Firebase.UserDTO;
 import com.jingyuan.capstone.R;
 import com.jingyuan.capstone.Utility.FirestoreUtilities;
@@ -84,6 +85,7 @@ public class LoginActivity extends AppCompatActivity {
                                 Toast.LENGTH_SHORT).show();
                         FirebaseUser user = mAuth.getCurrentUser();
                         assert user != null;
+                        addUserToFireStore(email, user.getUid());
                         updateUI(user);
                     } else {
                         Toast.makeText(LoginActivity.this, "Authentication failed.",
@@ -148,6 +150,16 @@ public class LoginActivity extends AppCompatActivity {
         finish();
     }
 
+    private void addUserToFireStore(String email, String uid) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        UserDTO user = new UserDTO();
+        user.setUsername("New User");
+        user.setPfp("https://firebasestorage.googleapis.com/v0/b/capstone-c62ee.appspot.com/o/default.jpg?alt=media");
+        user.setEmail(email);
+        user.setFcmtoken("");
+        user.setRole("customer");
+        db.collection("User").document(uid).set(user);
+    }
 
 
 }
