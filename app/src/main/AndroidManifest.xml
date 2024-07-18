@@ -18,8 +18,19 @@
             android:name=".Controller.StoreProductActivity"
             android:exported="false" />
         <activity
+            android:name=".Controller.StoreChatActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Controller.StoreInboxActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Controller.StorePrctDetailsActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".Controller.StoreHomeActivity"
             android:exported="false" />
+
         <activity
             android:name=".Controller.ChatActivity"
             android:exported="false" />

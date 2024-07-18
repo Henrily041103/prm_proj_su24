@@ -57,9 +57,21 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/cart_items_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:paddingHorizontal="10dp"
             android:visibility="invisible" />
+
+        <TextView
+            android:id="@+id/cart_total"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:padding="16dp"
+            android:text="Total: 0 USD"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 

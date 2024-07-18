@@ -68,8 +68,9 @@ public class StorePrctDetailsActivity extends AppCompatActivity {
         updateSectionLayout = findViewById(R.id.update_layout);
 
         Intent i = getIntent();
-        assert docData != null;
+
         docData = i.getStringExtra("doc").trim();
+        assert docData != null;
         db.collection("Product").document(docData).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 DocumentSnapshot document = task.getResult();

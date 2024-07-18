@@ -58,4 +58,8 @@ public class ProductItem {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    public String getPriceWithCurrency() {
+        return price + " USD";
+    }
 }

@@ -32,11 +32,13 @@ public class CartItemAdapter extends RecyclerView.Adapter<CartItemAdapter.MyView
     Context context;
     ArrayList<CartItem> cartItemsList;
     ImageButton clearCartBtn;
+    OnCartItemUpdateListener onCartItemUpdateListener;
 
-    public CartItemAdapter(Context context, ArrayList<CartItem> cartItemsList, ImageButton clearCartBtn) {
+    public CartItemAdapter(Context context, ArrayList<CartItem> cartItemsList, ImageButton clearCartBtn, OnCartItemUpdateListener onCartItemUpdateListener) {
         this.context = context;
         this.cartItemsList = cartItemsList;
         this.clearCartBtn = clearCartBtn;
+        this.onCartItemUpdateListener = onCartItemUpdateListener;
     }
 
     @NonNull
@@ -53,7 +55,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<CartItemAdapter.MyView
         CartItem item = cartItemsList.get(position);
         holder.name.setText(item.getName());
         holder.quantity.setText("Quantity: " + item.getQuantity());
-        holder.price.setText(item.getPrice() + "");
+        holder.price.setText(item.getPriceWithCurrency());
         String thumbnailURL = item.getThumbnail();
         Glide.with(context).load(thumbnailURL).into(holder.thumbnail);
         holder.delete.setOnClickListener(v -> {
@@ -74,12 +76,65 @@ public class CartItemAdapter extends RecyclerView.Adapter<CartItemAdapter.MyView
             editor.apply();
             notifyItemRemoved(removedIndex);
             notifyItemRangeChanged(removedIndex, cartItemsList.size() - removedIndex);
+            onCartItemUpdateListener.onCartItemRemoved();
         });
+        holder.addQuantity.setOnClickListener(v -> {
+            incrementQuantity(holder.getAdapterPosition());
+        });
+        holder.minusQuantity.setOnClickListener(v -> {
+            decrementQuantity(holder.getAdapterPosition());
+        });
+    }
+
+    private void incrementQuantity(int position) {
+        if (position < 0 || position >= cartItemsList.size()) {
+            return; // Invalid position
+        }
+
+        CartItem item = cartItemsList.get(position);
+        int newQuantity = item.getQuantity() + 1;
+
+        int maxQuantity = 99; // Example max quantity
+        if (newQuantity <= maxQuantity) {
+            item.setQuantity(newQuantity);
+            notifyItemChanged(position);
+            if (onCartItemUpdateListener != null) {
+                onCartItemUpdateListener.onCartItemUpdated();
+            }
+        } else {
+            // Optionally notify the user that they've reached the maximum quantity
+//            showMaxQuantityReachedDialog();
+        }
+    }
+
+    private void decrementQuantity(int position) {
+        if (position < 0 || position >= cartItemsList.size()) {
+            return; // Invalid position
+        }
+
+        CartItem item = cartItemsList.get(position);
+        int newQuantity = item.getQuantity() - 1;
+
+        if (newQuantity >= 1) {
+            item.setQuantity(newQuantity);
+            notifyItemChanged(position);
+            if (onCartItemUpdateListener != null) {
+                onCartItemUpdateListener.onCartItemUpdated();
+            }
+        } else {
+            // Ask the user if they want to remove the item from the cart
+//            showRemoveItemDialog(position);
+        }
     }
 
     @Override
     public int getItemCount() {
         return cartItemsList.size();
+    }
+
+    public interface OnCartItemUpdateListener {
+        void onCartItemRemoved();
+        void onCartItemUpdated();
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
@@ -89,6 +144,10 @@ public class CartItemAdapter extends RecyclerView.Adapter<CartItemAdapter.MyView
         TextView quantity;
         ImageButton delete;
 
+        ImageButton addQuantity;
+
+        ImageButton minusQuantity;
+
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.cart_item_name);
@@ -96,6 +155,8 @@ public class CartItemAdapter extends RecyclerView.Adapter<CartItemAdapter.MyView
             price = itemView.findViewById(R.id.cart_item_price);
             quantity = itemView.findViewById(R.id.cart_item_quantity);
             delete = itemView.findViewById(R.id.cart_item_delete);
+            addQuantity= itemView.findViewById(R.id.cart_item_add);
+            minusQuantity= itemView.findViewById(R.id.cart_item_minus);
         }
     }
 }
