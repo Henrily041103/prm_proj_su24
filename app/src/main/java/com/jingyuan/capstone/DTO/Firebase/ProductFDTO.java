@@ -1,5 +1,7 @@
 package com.jingyuan.capstone.DTO.Firebase;
 
+import androidx.annotation.NonNull;
+
 public class ProductFDTO {
     private CategoryFDTO category;
     private String thumbnail;
@@ -7,7 +9,7 @@ public class ProductFDTO {
     private String description;
     private int price;
     private int stock;
-    private StoreFDTO store;
+    private ProductStoreAttrFDTO store;
 
     public ProductFDTO() {
     }
@@ -60,15 +62,16 @@ public class ProductFDTO {
         this.stock = stock;
     }
 
-    public StoreFDTO getStore() {
+    public ProductStoreAttrFDTO getStore() {
         return store;
     }
 
-    public void setStore(StoreFDTO store) {
+    public void setStore(ProductStoreAttrFDTO store) {
         this.store = store;
     }
 
-    public String toString(ProductFDTO productFDTO) {
-        return category + "\n " + name + "\n " + description + "\n " + price + "\n " + stock;
+    @NonNull
+    public String toString() {
+        return thumbnail + "\n " + category + "\n " + name + "\n " + description + "\n " + price + "\n " + stock;
     }
 }

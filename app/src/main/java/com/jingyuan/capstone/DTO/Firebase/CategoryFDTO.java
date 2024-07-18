@@ -1,12 +1,14 @@
 package com.jingyuan.capstone.DTO.Firebase;
 
+import androidx.annotation.NonNull;
+
 public class CategoryFDTO {
-    private String doc;
+    private String id;
     private String name;
-    private String thumbnail;
+    private String thumbnail = "1686506930924.jpg";
 
     public String getThumbnail() {
-        return "https://firebasestorage.googleapis.com/v0/b/capstone-c62ee.appspot.com/o/" + "1686506930924.jpg" + "?alt=media";
+        return "https://firebasestorage.googleapis.com/v0/b/capstone-c62ee.appspot.com/o/" + thumbnail + "?alt=media";
     }
 
     public void setThumbnail(String thumbnail) {
@@ -16,12 +18,12 @@ public class CategoryFDTO {
     public CategoryFDTO() {
     }
 
-    public String getDoc() {
-        return doc;
+    public String getId() {
+        return id;
     }
 
-    public void setDoc(String doc) {
-        this.doc = doc;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -31,4 +33,11 @@ public class CategoryFDTO {
     public void setName(String name) {
         this.name = name;
     }
+
+    @NonNull
+    @Override
+    public String toString () {
+        return id + "\n" + name + "\n" + thumbnail + "\n";
+    }
+
 }

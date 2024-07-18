@@ -34,7 +34,7 @@ android {
 
 dependencies {
     //noinspection UseTomlInstead
-    implementation(platform("com.google.firebase:firebase-bom:33.1.1"))
+    implementation(platform("com.google.firebase:firebase-bom:33.1.2"))
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.firebase:firebase-auth")
     implementation ("com.firebaseui:firebase-ui-storage:7.2.0")

@@ -28,7 +28,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
 import com.jingyuan.capstone.DTO.Firebase.ProductFDTO;
-import com.jingyuan.capstone.DTO.Firebase.StoreFDTO;
+import com.jingyuan.capstone.DTO.Firebase.ProductStoreAttrFDTO;
 import com.jingyuan.capstone.DTO.View.Cart;
 import com.jingyuan.capstone.DTO.View.CartItem;
 import com.jingyuan.capstone.R;
@@ -44,8 +44,8 @@ public class DetailActivity extends AppCompatActivity {
     ImageView thumbnail;
     ImageButton backBtn, cartBtn, contactBtn;
     Button addToCartBtn;
-    String docData, phoneNumber;
-    StoreFDTO storeFDTO;
+    String docData;
+    ProductStoreAttrFDTO pStore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,9 +84,8 @@ public class DetailActivity extends AppCompatActivity {
                     price.setText(productFDTO.getPrice() + " USD");
                     des.setText(productFDTO.getDescription());
                     Glide.with(DetailActivity.this).load(productFDTO.getThumbnail()).into(thumbnail);
-                    storeFDTO = productFDTO.getStore();
-                    phoneNumber = storeFDTO.getPhone();
-                    store.setText("Store: " + storeFDTO.getName());
+                    pStore = productFDTO.getStore();
+                    store.setText("Store: " + pStore.getName());
                 }
             }
         });

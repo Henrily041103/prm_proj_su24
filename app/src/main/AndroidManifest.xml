@@ -15,6 +15,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Capstone">
         <activity
+            android:name=".Controller.StoreProductActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Controller.StoreHomeActivity"
+            android:exported="false" />
+        <activity
             android:name=".Controller.ChatActivity"
             android:exported="false" />
         <activity

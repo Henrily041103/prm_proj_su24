@@ -69,11 +69,11 @@
         android:text="Store: SS0" />
 
     <ImageButton
-        android:layout_toEndOf="@+id/store"
         android:id="@+id/contact_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/des"
+        android:layout_toEndOf="@+id/store"
         android:src="@drawable/chat_icon"
         tools:ignore="ContentDescription" />
 
@@ -100,7 +100,6 @@
             android:textAlignment="center"
             android:textSize="20sp"
             android:visibility="gone" />
-
     </RelativeLayout>
 
 </RelativeLayout>
