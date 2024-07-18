@@ -1,32 +1,43 @@
 package com.jingyuan.capstone.Controller;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.gson.Gson;
 import com.jingyuan.capstone.Adapter.CategoryAdapter;
 import com.jingyuan.capstone.Adapter.RecyclerViewAdapter;
 import com.jingyuan.capstone.DTO.Firebase.CategoryFDTO;
 import com.jingyuan.capstone.DTO.Firebase.ProductFDTO;
+import com.jingyuan.capstone.DTO.View.Cart;
+import com.jingyuan.capstone.DTO.View.CartItem;
 import com.jingyuan.capstone.DTO.View.ProductItem;
 import com.jingyuan.capstone.R;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Locale;
 
 public class ShopActivity extends AppCompatActivity {
@@ -35,13 +46,14 @@ public class ShopActivity extends AppCompatActivity {
     Toolbar toolbar;
     RecyclerView productRecyclerView, categoryRecyclerView;
     EditText searchView;
-    ImageButton filterButton, sortButton;
+    ImageButton filterButton, sortButton, cartBtn;
     ArrayList<ProductItem> productItemsList;
     ArrayList<CategoryFDTO> categoryDTOList;
     RecyclerViewAdapter productAdapter;
     CategoryAdapter categoryAdapter;
     String selectedCategory = "All";
     int sortOption = 0; // 0 - Default, 1 - Price (Low to High), 2 - Price (High to Low)
+    private int cartItemCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,12 +70,12 @@ public class ShopActivity extends AppCompatActivity {
         searchView = findViewById(R.id.search_view);
         filterButton = findViewById(R.id.filter_btn);
         sortButton = findViewById(R.id.sort_btn);
+        cartBtn = findViewById(R.id.cart);
         productRecyclerView = findViewById(R.id.product_recycler_view);
         categoryRecyclerView = findViewById(R.id.category_recycler_view);
         productItemsList = new ArrayList<>();
         categoryDTOList = new ArrayList<>();
 
-        ImageButton cartBtn = findViewById(R.id.cart);
         cartBtn.setOnClickListener(v -> {
             Intent intent = new Intent(ShopActivity.this, CartActivity.class);
             startActivity(intent);
@@ -98,6 +110,9 @@ public class ShopActivity extends AppCompatActivity {
         sortButton.setOnClickListener(v -> {
             showSortingOptions();
         });
+
+        // Update the cart item count
+        updateCartItemCount();
     }
 
     private void setupProductList() {
@@ -120,6 +135,7 @@ public class ShopActivity extends AppCompatActivity {
             if (task.isSuccessful()) {
                 CategoryFDTO allCategory = new CategoryFDTO();
                 allCategory.setName("All");
+                allCategory.setThumbnail("https://firebasestorage.googleapis.com/v0/b/capstone-c62ee.appspot.com/o/select_all.png?alt=media");
                 categoryDTOList.add(allCategory);
                 for (QueryDocumentSnapshot docSnap : task.getResult()) {
                     CategoryFDTO categoryFDTO = docSnap.toObject(CategoryFDTO.class);
@@ -155,6 +171,7 @@ public class ShopActivity extends AppCompatActivity {
         // Call the filterProducts() method to filter the productItemsList
         // Update the productAdapter with the filtered list
     }
+
 
     private void showSortingOptions() {
         // Show a dialog or bottom sheet to allow the user to select a sorting option
@@ -208,5 +225,35 @@ public class ShopActivity extends AppCompatActivity {
         if (productFDTO.getStock() == 0) status = "Out of stock";
         itemDTO.setStatus(status);
         return itemDTO;
+    }
+
+    private void updateCartItemCount() {
+        SharedPreferences sf = getSharedPreferences("my_prefs", Context.MODE_PRIVATE);
+        String plainJsonString = sf.getString("Cart", "empty");
+        if (!plainJsonString.equalsIgnoreCase("empty")) {
+            Gson gson = new Gson();
+            Cart cart = gson.fromJson(plainJsonString, Cart.class);
+            List<CartItem> cartItems = cart.getItems();
+            cartItemCount = (cartItems != null) ? cartItems.size() : 0;
+            TextView cartBadge = new TextView(this);
+            cartBadge.setText(String.valueOf(cartItemCount));
+            cartBadge.setTextColor(Color.WHITE);
+            cartBadge.setTextSize(12);
+            cartBadge.setPadding(8, 4, 8, 4);
+            cartBadge.setBackground(ContextCompat.getDrawable(this, R.drawable.cart_badge));
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.WRAP_CONTENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT
+            );
+            params.addRule(RelativeLayout.ALIGN_TOP, cartBtn.getId());
+            params.addRule(RelativeLayout.ALIGN_END, cartBtn.getId());
+            params.setMargins(0, 8, 8, 0);
+            ((ViewGroup) cartBtn.getParent()).addView(cartBadge, params);
+        } else {
+            TextView cartBadge = ((ViewGroup) cartBtn.getParent()).findViewById(R.id.cart_badge);
+            if (cartBadge != null) {
+                ((ViewGroup) cartBtn.getParent()).removeView(cartBadge);
+            }
+        }
     }
 }

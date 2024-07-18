@@ -6,14 +6,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,6 +38,8 @@ import com.jingyuan.capstone.DTO.View.CartItem;
 import com.jingyuan.capstone.R;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class DetailActivity extends AppCompatActivity {
     static int PERMISSION_CODE = 100;
@@ -42,10 +48,11 @@ public class DetailActivity extends AppCompatActivity {
     ProductFDTO productFDTO;
     TextView label, price, des, store, cart_notice;
     ImageView thumbnail;
-    ImageButton backBtn, cartBtn, contactBtn;
+    ImageButton backBtn, cartBtn;
     Button addToCartBtn;
     String docData;
     ProductStoreAttrFDTO pStore;
+    private int cartItemCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +68,6 @@ public class DetailActivity extends AppCompatActivity {
         backBtn = findViewById(R.id.back);
         thumbnail = findViewById(R.id.thumbnail);
         addToCartBtn = findViewById(R.id.add_to_cart_btn);
-        contactBtn = findViewById(R.id.contact_btn);
         cartBtn = findViewById(R.id.cart);
         cart_notice = findViewById(R.id.cart_notice);
         Intent i = getIntent();
@@ -105,11 +111,8 @@ public class DetailActivity extends AppCompatActivity {
             finish();
         });
 
-        contactBtn.setOnClickListener(v -> {
-            Intent i = new Intent(DetailActivity.this, ChatActivity.class);
-            i.putExtra("shopDoc", productFDTO.getStore().getDoc());
-            startActivity(i);
-        });
+        // Update the cart item count
+        updateCartItemCount();
     }
 
     public boolean checkAddedToCart(String doc) {
@@ -120,6 +123,9 @@ public class DetailActivity extends AppCompatActivity {
         }
         Gson gson = new Gson();
         Cart cart = gson.fromJson(plainJsonString, Cart.class);
+        if (cart == null || cart.getItems() == null) {
+            return false;
+        }
         for (CartItem item : cart.getItems()) {
             if (item.getDoc().equalsIgnoreCase(doc)) return true;
         }
@@ -134,7 +140,12 @@ public class DetailActivity extends AppCompatActivity {
         if (!plainJsonString.equalsIgnoreCase("empty")) {
             Gson gson = new Gson();
             cart = gson.fromJson(plainJsonString, Cart.class);
-            cartList = cart.getItems();
+            if (cart == null) {
+                cart = new Cart();
+            }
+            if (cart.getItems() != null) {
+                cartList = cart.getItems();
+            }
         }
         CartItem item = new CartItem(docData, productFDTO.getName(),
                 1, productFDTO.getPrice(), productFDTO.getThumbnail());
@@ -154,4 +165,33 @@ public class DetailActivity extends AppCompatActivity {
         cart_notice.setVisibility(View.VISIBLE);
     }
 
+    private void updateCartItemCount() {
+        SharedPreferences sf = getSharedPreferences("my_prefs", Context.MODE_PRIVATE);
+        String plainJsonString = sf.getString("Cart", "empty");
+        if (!plainJsonString.equalsIgnoreCase("empty")) {
+            Gson gson = new Gson();
+            Cart cart = gson.fromJson(plainJsonString, Cart.class);
+            List<CartItem> cartItems = cart.getItems();
+            cartItemCount = (cartItems != null) ? cartItems.size() : 0;
+            TextView cartBadge = new TextView(this);
+            cartBadge.setText(String.valueOf(cartItemCount));
+            cartBadge.setTextColor(Color.WHITE);
+            cartBadge.setTextSize(12);
+            cartBadge.setPadding(8, 4, 8, 4);
+            cartBadge.setBackground(ContextCompat.getDrawable(this, R.drawable.cart_badge));
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.WRAP_CONTENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT
+            );
+            params.addRule(RelativeLayout.ALIGN_TOP, cartBtn.getId());
+            params.addRule(RelativeLayout.ALIGN_END, cartBtn.getId());
+            params.setMargins(0, 8, 8, 0);
+            ((ViewGroup) cartBtn.getParent()).addView(cartBadge, params);
+        } else {
+            TextView cartBadge = ((ViewGroup) cartBtn.getParent()).findViewById(R.id.cart_badge);
+            if (cartBadge != null) {
+                ((ViewGroup) cartBtn.getParent()).removeView(cartBadge);
+            }
+        }
+    }
 }
