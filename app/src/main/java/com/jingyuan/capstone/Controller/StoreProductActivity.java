@@ -1,30 +1,17 @@
 package com.jingyuan.capstone.Controller;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.Toast;
-
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import com.jingyuan.capstone.DTO.Firebase.CategoryFDTO;
 import com.jingyuan.capstone.DTO.Firebase.ProductFDTO;
 import com.jingyuan.capstone.DTO.Firebase.ProductStoreAttrFDTO;
@@ -33,19 +20,14 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class StoreProductActivity extends AppCompatActivity {
-    FirebaseStorage storage = FirebaseStorage.getInstance();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    StorageReference storageRef = storage.getReference();
     TextInputEditText nameInput, desInput, priceInput, stockInput;
     AutoCompleteTextView catInput;
     Button addProductBtn;
-    ImageButton uploadImgBtn;
-    ImageView previewThumb;
     ArrayList<CategoryFDTO> catList = new ArrayList<>();
     ArrayList<String> catStringList = new ArrayList<>();
     ArrayAdapter<String> adapter;
-    Uri imageUri;
-    Bitmap imageBitmap;
+    ProductFDTO product = new ProductFDTO();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,8 +39,6 @@ public class StoreProductActivity extends AppCompatActivity {
         stockInput = findViewById(R.id.product_stock_input);
         addProductBtn = findViewById(R.id.add_product_btn);
         catInput = findViewById(R.id.product_category_input);
-        uploadImgBtn = findViewById(R.id.upload_image_btn);
-        previewThumb = findViewById(R.id.preview_thumbnail);
         db.collection("Category").get().addOnCompleteListener(task -> {
             for (QueryDocumentSnapshot document : task.getResult()) {
                 CategoryFDTO cat = document.toObject(CategoryFDTO.class);
@@ -76,14 +56,10 @@ public class StoreProductActivity extends AppCompatActivity {
         addProductBtn.setOnClickListener(v -> {
             addProduct();
         });
-        uploadImgBtn.setOnClickListener(v -> {
-            pickImageFromGallery();
-        });
     }
 
     private void addProduct() {
         SharedPreferences sf = getSharedPreferences("my_prefs", Context.MODE_PRIVATE);
-        ProductFDTO product = new ProductFDTO();
         CategoryFDTO selectedCat = retrieveCat(Objects.requireNonNull(catInput.getText()).toString());
         product.setCategory(selectedCat);
         product.setName(Objects.requireNonNull(nameInput.getText()).toString());
@@ -94,7 +70,9 @@ public class StoreProductActivity extends AppCompatActivity {
         store.setDoc(sf.getString("storeDoc", "error"));
         store.setName(sf.getString("name", "error"));
         product.setStore(store);
-        db.collection("Product").add(product).addOnSuccessListener(documentReference -> {
+        product.setThumbnail("");
+
+        db.collection("Product").add(product).addOnSuccessListener(docRef -> {
             Toast.makeText(StoreProductActivity.this, "Product created successfully", Toast.LENGTH_SHORT).show();
             Intent i = new Intent(getApplicationContext(), StoreHomeActivity.class);
             startActivity(i);
@@ -103,6 +81,7 @@ public class StoreProductActivity extends AppCompatActivity {
         });
     }
 
+    //UTILITIES
     private CategoryFDTO retrieveCat(String selectedString) {
         for (CategoryFDTO item : catList) {
             if (item.getName().equalsIgnoreCase(selectedString)) {
@@ -111,20 +90,4 @@ public class StoreProductActivity extends AppCompatActivity {
         }
         return null;
     }
-
-    private void pickImageFromGallery() {
-        Intent i = new Intent();
-        i.setType("image/*");
-        i.setAction(Intent.ACTION_GET_CONTENT);
-    }
-
-    ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if (result.getResultCode() == Activity.RESULT_OK) {
-                    Intent data = result.getData();
-                    imageUri = data.getData();
-
-                }
-            });
-
 }
