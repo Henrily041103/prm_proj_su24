@@ -41,7 +41,7 @@ public class ShopPrctRecViewAdapter extends RecyclerView.Adapter<ShopPrctRecView
         String thumbnailURL = productItemsList.get(position).getThumbnail();
         Glide.with(context).load(thumbnailURL).placeholder(R.drawable.loading).into(holder.thumbnail);
         holder.price.setText(productItemsList.get(position).getPrice()+"");
-        holder.thumbnail.setOnClickListener(v -> {
+        holder.name.setOnClickListener(v -> {
             Intent intent = new Intent(context, StorePrctDetailsActivity.class);
             intent.putExtra("doc", productItemsList.get(holder.getAdapterPosition()).getDoc());
             context.startActivity(intent);

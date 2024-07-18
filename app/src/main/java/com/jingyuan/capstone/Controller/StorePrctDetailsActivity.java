@@ -6,7 +6,6 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.ArrayAdapter;
@@ -16,17 +15,11 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -35,13 +28,12 @@ import com.google.firebase.storage.StorageReference;
 import com.jingyuan.capstone.DTO.Firebase.CategoryFDTO;
 import com.jingyuan.capstone.DTO.Firebase.ProductFDTO;
 import com.jingyuan.capstone.R;
-
 import java.util.ArrayList;
 import java.util.Objects;
 
 public class StorePrctDetailsActivity extends AppCompatActivity {
-    FirebaseStorage storage = FirebaseStorage.getInstance();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageRef = storage.getReference();
     ActivityResultLauncher<Intent> launcher;
     AutoCompleteTextView catInput;
@@ -57,6 +49,7 @@ public class StorePrctDetailsActivity extends AppCompatActivity {
     String imageDownloadUrl, docData;
     ProductFDTO product = new ProductFDTO();
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +66,7 @@ public class StorePrctDetailsActivity extends AppCompatActivity {
         confirmUploadBtn = findViewById(R.id.confirm_upload_image_btn);
         previewThumb = findViewById(R.id.preview_thumbnail);
         updateSectionLayout = findViewById(R.id.update_layout);
+
         db.collection("Category").get().addOnCompleteListener(task -> {
             for (QueryDocumentSnapshot document : task.getResult()) {
                 CategoryFDTO cat = document.toObject(CategoryFDTO.class);
@@ -81,24 +75,19 @@ public class StorePrctDetailsActivity extends AppCompatActivity {
             }
         });
         Intent i = getIntent();
-        docData = i.getStringExtra("doc");
         assert docData != null;
-        DocumentReference docRef = db.collection("Product").document(docData);
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @SuppressLint("SetTextI18n")
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    product = document.toObject(ProductFDTO.class);
-                    assert product != null;
-                    nameInput.setText(product.getName());
-                    desInput.setText(product.getDescription());
-                    priceInput.setText(product.getPrice() + "");
-                    stockInput.setText(product.getStock() + "");
-                    catInput.setText(product.getCategory().getName());
-                    Glide.with(StorePrctDetailsActivity.this).load(product.getThumbnail()).into(previewThumb);
-                }
+        docData = i.getStringExtra("doc").trim();
+        db.collection("Product").document(docData).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                product = document.toObject(ProductFDTO.class);
+                assert product != null;
+                nameInput.setText(product.getName());
+                desInput.setText(product.getDescription());
+                priceInput.setText(product.getPrice()+"");
+                stockInput.setText(product.getStock()+"");
+                catInput.setText(product.getCategory().getName());
+                Glide.with(StorePrctDetailsActivity.this).load(product.getThumbnail()).into(previewThumb);
             }
         });
     }

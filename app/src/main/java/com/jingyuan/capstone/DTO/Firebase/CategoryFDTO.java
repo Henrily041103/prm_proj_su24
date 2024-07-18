@@ -8,8 +8,9 @@ public class CategoryFDTO {
     private String thumbnail = "1686506930924.jpg";
 
     public String getThumbnail() {
-        return  thumbnail;
+        return thumbnail;
     }
+
 
     public void setThumbnail(String thumbnail) {
         this.thumbnail = thumbnail;

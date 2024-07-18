@@ -41,8 +41,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-//        testUpdateUIAdmin();
-        testUpdateUI();
+//        testUpdateUI();
     }
 
     public void onSignUpBtnClick(View v) {
@@ -124,6 +123,7 @@ public class LoginActivity extends AppCompatActivity {
                 editor.putString("pfp", userDTO.getPfp());
                 editor.apply();
                 if (userDTO.getRole().equalsIgnoreCase("store")) {
+
                     Intent i = new Intent(getApplicationContext(), StoreHomeActivity.class);
                     startActivity(i);
                 }
@@ -148,16 +148,6 @@ public class LoginActivity extends AppCompatActivity {
         finish();
     }
 
-    private void testUpdateUIAdmin() {
-        SharedPreferences sf = getSharedPreferences("my_prefs", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sf.edit();
-        editor.putString("username", "Hu Tao");
-        editor.putString("email", "hutao6969@gmail.com");
-        editor.putString("pfp", "https://firebasestorage.googleapis.com/v0/b/capstone-c62ee.appspot.com/o/avatar%2Fhutao.png?alt=media");
-        editor.putString("uid", "7oOGONkMleUrLjeylKMSl6R4pzr1");
-        editor.apply();
-        Intent i = new Intent(getApplicationContext(), StoreHomeActivity.class);
-        startActivity(i);
-        finish();
-    }
+
+
 }
