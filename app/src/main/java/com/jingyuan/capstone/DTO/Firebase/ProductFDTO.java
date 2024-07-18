@@ -23,7 +23,7 @@ public class ProductFDTO {
     }
 
     public String getThumbnail() {
-        return "https://firebasestorage.googleapis.com/v0/b/capstone-c62ee.appspot.com/o/" + thumbnail + "?alt=media";
+        return thumbnail ;
     }
 
     public void setThumbnail(String thumbnail) {
