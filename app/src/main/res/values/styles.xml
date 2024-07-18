@@ -47,7 +47,7 @@
     <style name="label" parent="Widget.Material3.TextInputLayout.OutlinedBox.Dense">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginVertical">2dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
     </style>
     <style name="input">
         <item name="android:layout_width">match_parent</item>

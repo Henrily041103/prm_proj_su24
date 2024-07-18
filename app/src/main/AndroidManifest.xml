@@ -15,10 +15,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Capstone">
         <activity
-            android:name=".Controller.AdminProductActivity"
+            android:name=".Controller.StoreProductActivity"
             android:exported="false" />
         <activity
-            android:name=".Controller.AdminHomeActivity"
+            android:name=".Controller.StoreHomeActivity"
             android:exported="false" />
         <activity
             android:name=".Controller.ChatActivity"

@@ -4,25 +4,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.auth.User;
 import com.jingyuan.capstone.DTO.Firebase.UserDTO;
 import com.jingyuan.capstone.R;
 import com.jingyuan.capstone.Utility.FirestoreUtilities;
@@ -32,6 +24,7 @@ public class LoginActivity extends AppCompatActivity {
     EditText usernameInputField;
     EditText passwordInputField;
     FirestoreUtilities util = new FirestoreUtilities();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +41,8 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        testUpdateUIAdmin();
+//        testUpdateUIAdmin();
+        testUpdateUI();
     }
 
     public void onSignUpBtnClick(View v) {
@@ -129,8 +123,8 @@ public class LoginActivity extends AppCompatActivity {
                 editor.putString("email", userDTO.getEmail());
                 editor.putString("pfp", userDTO.getPfp());
                 editor.apply();
-                if (userDTO.getRole().equalsIgnoreCase("admin")) {
-                    Intent i = new Intent(getApplicationContext(), AdminHomeActivity.class);
+                if (userDTO.getRole().equalsIgnoreCase("store")) {
+                    Intent i = new Intent(getApplicationContext(), StoreHomeActivity.class);
                     startActivity(i);
                 }
                 else {
@@ -157,11 +151,12 @@ public class LoginActivity extends AppCompatActivity {
     private void testUpdateUIAdmin() {
         SharedPreferences sf = getSharedPreferences("my_prefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sf.edit();
-        editor.putString("username", "Firefly");
-        editor.putString("email", "firefly@gmail.com");
-        editor.putString("pfp", "https://firebasestorage.googleapis.com/v0/b/capstone-c62ee.appspot.com/o/sam.jpg?alt=media");
+        editor.putString("username", "Hu Tao");
+        editor.putString("email", "hutao6969@gmail.com");
+        editor.putString("pfp", "https://firebasestorage.googleapis.com/v0/b/capstone-c62ee.appspot.com/o/avatar%2Fhutao.png?alt=media");
+        editor.putString("uid", "7oOGONkMleUrLjeylKMSl6R4pzr1");
         editor.apply();
-        Intent i = new Intent(getApplicationContext(), AdminHomeActivity.class);
+        Intent i = new Intent(getApplicationContext(), StoreHomeActivity.class);
         startActivity(i);
         finish();
     }
