@@ -41,8 +41,8 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        testUpdateUIAdmin();
-//        testUpdateUI();
+//        testUpdateUIAdmin();
+        testUpdateUI();
     }
 
     public void onSignUpBtnClick(View v) {

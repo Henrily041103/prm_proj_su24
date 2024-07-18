@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="15dp"
-    tools:context=".Controller.StoreProductActivity">
+    tools:context=".Controller.StorePrctDetailsActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -30,6 +30,7 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/product_name_input"
                 style="@style/input"
+                android:enabled="false"
                 android:inputType="text" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -40,6 +41,7 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/product_description_input"
                 style="@style/input"
+                android:enabled="false"
                 android:gravity="top"
                 android:inputType="textMultiLine"
                 android:lines="5" />
@@ -59,6 +61,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/product_price_input"
                     style="@style/input"
+                    android:enabled="false"
                     android:inputType="number" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -72,6 +75,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/product_stock_input"
                     style="@style/input"
+                    android:enabled="false"
                     android:inputType="number" />
             </com.google.android.material.textfield.TextInputLayout>
         </RelativeLayout>
@@ -86,18 +90,76 @@
                 android:id="@+id/product_category_input"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:enabled="false"
                 android:inputType="none"
                 tools:ignore="LabelFor" />
         </com.google.android.material.textfield.TextInputLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp">
+
+            <ImageButton
+                android:id="@+id/upload_image_btn"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/upload_image"
+                tools:ignore="ContentDescription" />
+
+            <ImageButton
+                android:id="@+id/confirm_upload_image_btn"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:layout_toEndOf="@+id/upload_image_btn"
+                android:src="@drawable/check_icon"
+                android:visibility="gone"
+                tools:ignore="ContentDescription" />
+
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/preview_thumbnail"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:adjustViewBounds="true" />
+
     </LinearLayout>
 
     <Button
-        android:id="@+id/add_product_btn"
+        android:id="@+id/edit_product_btn"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
         android:layout_marginTop="15dp"
         android:backgroundTint="@color/dark_gray"
-        android:text="@string/add_product" />
+        android:text="@string/edit_product" />
+
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/update_layout"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <Button
+            android:id="@+id/cancel_update_btn"
+            android:textColor="@color/black"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:backgroundTint="#DEDEDE"
+            android:layout_marginEnd="10dp"
+            android:text="@string/cancel"/>
+
+        <Button
+            android:id="@+id/update_product_btn"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:backgroundTint="@color/dark_gray"
+            android:text="@string/update_product"/>
+    </LinearLayout>
 
 </RelativeLayout>

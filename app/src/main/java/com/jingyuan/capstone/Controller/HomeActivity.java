@@ -5,16 +5,20 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,11 +28,13 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.gson.Gson;
+import com.jingyuan.capstone.Adapter.RecyclerViewAdapter;
 import com.jingyuan.capstone.DTO.Firebase.CategoryFDTO;
 import com.jingyuan.capstone.DTO.Firebase.ProductFDTO;
+import com.jingyuan.capstone.DTO.View.Cart;
 import com.jingyuan.capstone.DTO.View.ProductItem;
 import com.jingyuan.capstone.R;
-import com.jingyuan.capstone.Adapter.RecyclerViewAdapter;
 
 import java.util.ArrayList;
 
@@ -37,6 +43,7 @@ public class HomeActivity extends AppCompatActivity {
     public static final String CHANNEL_ID = "NoticeChannelID";
     public static final String CHANNEL_NAME = "Notice name";
     public static final String CHANNEL_DESC = "Description";
+    private int cartItemCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +106,9 @@ public class HomeActivity extends AppCompatActivity {
         navEmail.setText(sf.getString("email","error"));
         String pfpURL = sf.getString("pfp","error");
         Glide.with(HomeActivity.this).load(pfpURL).placeholder(R.drawable.sam).dontAnimate().into(pfp);
+
+        // Update the cart item count
+        updateCartItemCount();
     }
 
     private static ProductItem getProductItemDTO(QueryDocumentSnapshot docSnap, ProductFDTO productFDTO) {
@@ -121,5 +131,35 @@ public class HomeActivity extends AppCompatActivity {
                 String token = task.getResult();
             }
         });
+    }
+
+    private void updateCartItemCount() {
+        ImageButton cartBtn = findViewById(R.id.cart);
+        SharedPreferences sf = getSharedPreferences("my_prefs", Context.MODE_PRIVATE);
+        String plainJsonString = sf.getString("Cart", "empty");
+        if (!plainJsonString.equalsIgnoreCase("empty")) {
+            Gson gson = new Gson();
+            Cart cart = gson.fromJson(plainJsonString, Cart.class);
+            cartItemCount = cart.getItems().size();
+            TextView cartBadge = new TextView(this);
+            cartBadge.setText(String.valueOf(cartItemCount));
+            cartBadge.setTextColor(Color.WHITE);
+            cartBadge.setTextSize(12);
+            cartBadge.setPadding(8, 4, 8, 4);
+            cartBadge.setBackground(ContextCompat.getDrawable(this, R.drawable.cart_badge));
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.WRAP_CONTENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT
+            );
+            params.addRule(RelativeLayout.ALIGN_TOP, cartBtn.getId());
+            params.addRule(RelativeLayout.ALIGN_END, cartBtn.getId());
+            params.setMargins(0, 8, 8, 0);
+            ((ViewGroup) cartBtn.getParent()).addView(cartBadge, params);
+        } else {
+            TextView cartBadge = ((ViewGroup) cartBtn.getParent()).findViewById(R.id.cart_badge);
+            if (cartBadge != null) {
+                ((ViewGroup) cartBtn.getParent()).removeView(cartBadge);
+            }
+        }
     }
 }

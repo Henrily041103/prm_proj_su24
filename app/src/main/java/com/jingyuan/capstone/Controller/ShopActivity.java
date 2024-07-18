@@ -25,6 +25,8 @@ import com.jingyuan.capstone.DTO.View.ProductItem;
 import com.jingyuan.capstone.R;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Locale;
 
 public class ShopActivity extends AppCompatActivity {
@@ -33,11 +35,13 @@ public class ShopActivity extends AppCompatActivity {
     Toolbar toolbar;
     RecyclerView productRecyclerView, categoryRecyclerView;
     EditText searchView;
-    ImageButton filterButton;
+    ImageButton filterButton, sortButton;
     ArrayList<ProductItem> productItemsList;
     ArrayList<CategoryFDTO> categoryDTOList;
     RecyclerViewAdapter productAdapter;
     CategoryAdapter categoryAdapter;
+    String selectedCategory = "All";
+    int sortOption = 0; // 0 - Default, 1 - Price (Low to High), 2 - Price (High to Low)
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,10 +57,17 @@ public class ShopActivity extends AppCompatActivity {
         });
         searchView = findViewById(R.id.search_view);
         filterButton = findViewById(R.id.filter_btn);
+        sortButton = findViewById(R.id.sort_btn);
         productRecyclerView = findViewById(R.id.product_recycler_view);
         categoryRecyclerView = findViewById(R.id.category_recycler_view);
         productItemsList = new ArrayList<>();
         categoryDTOList = new ArrayList<>();
+
+        ImageButton cartBtn = findViewById(R.id.cart);
+        cartBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(ShopActivity.this, CartActivity.class);
+            startActivity(intent);
+        });
     }
 
     @Override
@@ -81,8 +92,11 @@ public class ShopActivity extends AppCompatActivity {
         });
 
         filterButton.setOnClickListener(v -> {
-            // Show filter options
-            Toast.makeText(this, "Filter button clicked", Toast.LENGTH_SHORT).show();
+            showFilterOptions();
+        });
+
+        sortButton.setOnClickListener(v -> {
+            showSortingOptions();
         });
     }
 
@@ -104,6 +118,9 @@ public class ShopActivity extends AppCompatActivity {
     private void setupCategoryList() {
         db.collection("Category").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
+                CategoryFDTO allCategory = new CategoryFDTO();
+                allCategory.setName("All");
+                categoryDTOList.add(allCategory);
                 for (QueryDocumentSnapshot docSnap : task.getResult()) {
                     CategoryFDTO categoryFDTO = docSnap.toObject(CategoryFDTO.class);
                     categoryDTOList.add(categoryFDTO);
@@ -111,18 +128,72 @@ public class ShopActivity extends AppCompatActivity {
                 categoryAdapter = new CategoryAdapter(this, categoryDTOList);
                 categoryRecyclerView.setAdapter(categoryAdapter);
                 categoryRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+
+                categoryAdapter.setOnCategoryClickListener(category -> {
+                    selectedCategory = category.getName();
+                    filterProducts(searchView.getText().toString().toLowerCase(Locale.getDefault()));
+                });
             }
         });
     }
 
+
     private void filterProducts(String query) {
         ArrayList<ProductItem> filteredItems = new ArrayList<>();
         for (ProductItem item : productItemsList) {
-            if (item.getName().toLowerCase(Locale.getDefault()).contains(query)) {
+            if (item.getName().toLowerCase(Locale.getDefault()).contains(query) && (selectedCategory.equals("All") || item.getCategory().equalsIgnoreCase(selectedCategory))) {
                 filteredItems.add(item);
             }
         }
+        sortProducts(filteredItems);
         productAdapter.updateData(filteredItems);
+    }
+
+    private void showFilterOptions() {
+        // Show a dialog or bottom sheet to allow the user to select a filtering option
+        // Update the selectedCategory variable based on the user's selection
+        // Call the filterProducts() method to filter the productItemsList
+        // Update the productAdapter with the filtered list
+    }
+
+    private void showSortingOptions() {
+        // Show a dialog or bottom sheet to allow the user to select a sorting option
+        final CharSequence[] items = {"Default", "Price (Low to High)", "Price (High to Low)"};
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        builder.setTitle("Sort by");
+        builder.setItems(items, (dialog, item) -> {
+            switch (item) {
+                case 0:
+                    // Default sorting (no sorting)
+                    sortOption = 0;
+                    sortProducts(productItemsList);
+                    break;
+                case 1:
+                    // Sort by price (low to high)
+                    sortOption = 1;
+                    sortByPriceLowToHigh(productItemsList);
+                    break;
+                case 2:
+                    // Sort by price (high to low)
+                    sortOption = 2;
+                    sortByPriceHighToLow(productItemsList);
+                    break;
+            }
+            productAdapter.updateData(productItemsList);
+        });
+        builder.show();
+    }
+
+    private void sortProducts(ArrayList<ProductItem> items) {
+        // No sorting, keep the default order
+    }
+
+    private void sortByPriceLowToHigh(ArrayList<ProductItem> items) {
+        Collections.sort(items, Comparator.comparingInt(ProductItem::getPrice));
+    }
+
+    private void sortByPriceHighToLow(ArrayList<ProductItem> items) {
+        Collections.sort(items, (a, b) -> Integer.compare(b.getPrice(), a.getPrice()));
     }
 
     private static ProductItem getProductItemDTO(QueryDocumentSnapshot docSnap, ProductFDTO productFDTO) {

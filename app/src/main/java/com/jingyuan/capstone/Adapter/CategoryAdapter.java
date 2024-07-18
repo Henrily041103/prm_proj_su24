@@ -17,9 +17,11 @@ import com.jingyuan.capstone.R;
 
 import java.util.ArrayList;
 
-public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyViewHolder>{
+public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyViewHolder> {
     Context context;
     ArrayList<CategoryFDTO> categoryFDTOSList;
+    private OnCategoryClickListener onCategoryClickListener;
+
     public CategoryAdapter(Context context, ArrayList<CategoryFDTO> categoryFDTOSList) {
         this.context = context;
         this.categoryFDTOSList = categoryFDTOSList;
@@ -36,9 +38,16 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull CategoryAdapter.MyViewHolder holder, int position) {
-        holder.title.setText(categoryFDTOSList.get(position).getName());
-        String thumbnailURL = categoryFDTOSList.get(position).getThumbnail();
+        CategoryFDTO category = categoryFDTOSList.get(position);
+        holder.title.setText(category.getName());
+        String thumbnailURL = category.getThumbnail();
         Glide.with(context).load(thumbnailURL).into(holder.thumbnail);
+
+        holder.itemView.setOnClickListener(v -> {
+            if (onCategoryClickListener != null) {
+                onCategoryClickListener.onCategoryClick(category);
+            }
+        });
     }
 
     @Override
@@ -46,10 +55,19 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
         return categoryFDTOSList.size();
     }
 
+    public void setOnCategoryClickListener(OnCategoryClickListener listener) {
+        this.onCategoryClickListener = listener;
+    }
+
+    public interface OnCategoryClickListener {
+        void onCategoryClick(CategoryFDTO category);
+    }
+
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         TextView title;
         ImageView thumbnail;
-        public MyViewHolder (@NonNull View itemView) {
+
+        public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.category_title);
             thumbnail = itemView.findViewById(R.id.thumbnail);
