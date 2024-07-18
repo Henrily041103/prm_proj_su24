@@ -9,8 +9,6 @@
     android:padding="15dp"
     tools:context=".Controller.StoreProductActivity">
 
-    <!--    private String thumbnail;-->
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -20,6 +18,7 @@
             android:id="@+id/back"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_marginBottom="10dp"
             android:background="@android:color/transparent"
             android:src="@drawable/arrow_back"
             tools:ignore="ContentDescription" />
@@ -90,6 +89,20 @@
                 android:inputType="none"
                 tools:ignore="LabelFor" />
         </com.google.android.material.textfield.TextInputLayout>
+
+        <ImageButton
+            android:id="@+id/upload_image_btn"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/upload_image"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/preview_thumbnail"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="fitXY" />
 
     </LinearLayout>
 
