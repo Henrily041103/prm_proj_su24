@@ -8,9 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -18,7 +16,6 @@ import com.jingyuan.capstone.DTO.Firebase.CategoryFDTO;
 import com.jingyuan.capstone.DTO.Firebase.ProductFDTO;
 import com.jingyuan.capstone.DTO.Firebase.ProductStoreAttrFDTO;
 import com.jingyuan.capstone.R;
-
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -30,6 +27,7 @@ public class StoreProductActivity extends AppCompatActivity {
     ArrayList<CategoryFDTO> catList = new ArrayList<>();
     ArrayList<String> catStringList = new ArrayList<>();
     ArrayAdapter<String> adapter;
+    ProductFDTO product = new ProductFDTO();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +60,6 @@ public class StoreProductActivity extends AppCompatActivity {
 
     private void addProduct() {
         SharedPreferences sf = getSharedPreferences("my_prefs", Context.MODE_PRIVATE);
-        ProductFDTO product = new ProductFDTO();
         CategoryFDTO selectedCat = retrieveCat(Objects.requireNonNull(catInput.getText()).toString());
         product.setCategory(selectedCat);
         product.setName(Objects.requireNonNull(nameInput.getText()).toString());
@@ -73,7 +70,9 @@ public class StoreProductActivity extends AppCompatActivity {
         store.setDoc(sf.getString("storeDoc", "error"));
         store.setName(sf.getString("name", "error"));
         product.setStore(store);
-        db.collection("Product").add(product).addOnSuccessListener(documentReference -> {
+        product.setThumbnail("");
+
+        db.collection("Product").add(product).addOnSuccessListener(docRef -> {
             Toast.makeText(StoreProductActivity.this, "Product created successfully", Toast.LENGTH_SHORT).show();
             Intent i = new Intent(getApplicationContext(), StoreHomeActivity.class);
             startActivity(i);
@@ -82,6 +81,7 @@ public class StoreProductActivity extends AppCompatActivity {
         });
     }
 
+    //UTILITIES
     private CategoryFDTO retrieveCat(String selectedString) {
         for (CategoryFDTO item : catList) {
             if (item.getName().equalsIgnoreCase(selectedString)) {
