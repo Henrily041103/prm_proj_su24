@@ -4,12 +4,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -21,35 +24,27 @@ import com.jingyuan.capstone.DTO.View.ProductItem;
 import com.jingyuan.capstone.R;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class StoreHomeActivity extends AppCompatActivity {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    FirebaseAuth auth = FirebaseAuth.getInstance();
     StoreFDTO store = new StoreFDTO();
     ArrayList<ProductItem> productItemsList = new ArrayList<>();
     ShopPrctRecViewAdapter productAdapter;
     RecyclerView productRecyclerView;
     Button addProductBtn, inboxBtn;
+    String userDoc;
+    SharedPreferences sf;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_home);
         productRecyclerView = findViewById(R.id.store_product_view);
-        SharedPreferences sf = getSharedPreferences("my_prefs", Context.MODE_PRIVATE);
-        String userDoc = sf.getString("uid", "error");
-
-        db.collection("Store").whereEqualTo("ownerDoc", userDoc).get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                DocumentSnapshot docSnap = task.getResult().getDocuments().get(0);
-                store = docSnap.toObject(StoreFDTO.class);
-                assert store != null;
-                store.setDoc(docSnap.getId());
-                SharedPreferences.Editor editor = sf.edit();
-                editor.putString("storeDoc", store.getDoc());
-                editor.putString("name", store.getName());
-                editor.apply();
-            }
-        });
+        sf = getSharedPreferences("my_prefs", Context.MODE_PRIVATE);
+        userDoc = Objects.requireNonNull(auth.getUid()).trim();
+        setUpStoreData();
     }
 
     @Override
@@ -65,6 +60,21 @@ public class StoreHomeActivity extends AppCompatActivity {
         inboxBtn.setOnClickListener(v -> {
             Intent i = new Intent(getApplicationContext(), StoreInboxActivity.class);
             startActivity(i);
+        });
+    }
+
+    private void setUpStoreData() {
+        db.collection("Store").whereEqualTo("ownerDoc", userDoc).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot docSnap = task.getResult().getDocuments().get(0);
+                store = docSnap.toObject(StoreFDTO.class);
+                assert store != null;
+                store.setDoc(docSnap.getId());
+                SharedPreferences.Editor editor = sf.edit();
+                editor.putString("storeDoc", store.getDoc());
+                editor.putString("name", store.getName());
+                editor.apply();
+            }
         });
     }
 
