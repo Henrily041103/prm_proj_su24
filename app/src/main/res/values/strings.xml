@@ -59,4 +59,7 @@
     <string name="product_stock">Available stock</string>
     <string name="add_product">Add Product</string>
     <string name="product_category">Category</string>
+    <string name="update_product">Update</string>
+    <string name="edit_product">Edit</string>
+    <string name="cancel">Cancel</string>
 </resources>

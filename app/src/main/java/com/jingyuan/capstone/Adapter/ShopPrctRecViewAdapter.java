@@ -8,8 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 import com.jingyuan.capstone.Controller.DetailActivity;
 import com.jingyuan.capstone.Controller.StorePrctDetailsActivity;
@@ -21,6 +23,7 @@ import java.util.ArrayList;
 public class ShopPrctRecViewAdapter extends RecyclerView.Adapter<ShopPrctRecViewAdapter.MyViewHolder> {
     Context context;
     ArrayList<ProductItem> productItemsList;
+
     public ShopPrctRecViewAdapter(Context context, ArrayList<ProductItem> productItemsList) {
         this.context = context;
         this.productItemsList = productItemsList;
@@ -40,8 +43,8 @@ public class ShopPrctRecViewAdapter extends RecyclerView.Adapter<ShopPrctRecView
         holder.name.setText(productItemsList.get(position).getName());
         String thumbnailURL = productItemsList.get(position).getThumbnail();
         Glide.with(context).load(thumbnailURL).placeholder(R.drawable.loading).into(holder.thumbnail);
-        holder.price.setText(productItemsList.get(position).getPrice()+"");
-        holder.thumbnail.setOnClickListener(v -> {
+        holder.price.setText(productItemsList.get(position).getPriceWithCurrency());
+        holder.name.setOnClickListener(v -> {
             Intent intent = new Intent(context, StorePrctDetailsActivity.class);
             intent.putExtra("doc", productItemsList.get(holder.getAdapterPosition()).getDoc());
             context.startActivity(intent);
@@ -57,7 +60,8 @@ public class ShopPrctRecViewAdapter extends RecyclerView.Adapter<ShopPrctRecView
         TextView name;
         TextView price;
         ImageView thumbnail;
-        public MyViewHolder (@NonNull View itemView) {
+
+        public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.item_name);
             price = itemView.findViewById(R.id.item_price);

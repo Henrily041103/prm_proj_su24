@@ -18,6 +18,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -33,22 +34,26 @@ import com.jingyuan.capstone.Adapter.RecyclerViewAdapter;
 import com.jingyuan.capstone.DTO.Firebase.CategoryFDTO;
 import com.jingyuan.capstone.DTO.Firebase.ProductFDTO;
 import com.jingyuan.capstone.DTO.View.Cart;
+import com.jingyuan.capstone.DTO.View.CartItem;
 import com.jingyuan.capstone.DTO.View.ProductItem;
 import com.jingyuan.capstone.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
-    public static final String CHANNEL_ID = "NoticeChannelID";
-    public static final String CHANNEL_NAME = "Notice name";
-    public static final String CHANNEL_DESC = "Description";
+    public static final String CHANNEL_ID = "CartNotificationChannel";
+    public static final String CHANNEL_NAME = "Cart Notifications";
+    public static final String CHANNEL_DESC = "Notifications for cart updates";
     private int cartItemCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        // Create the notification channel
+        createNotificationChannel();
 
         NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT);
         channel.setDescription(CHANNEL_DESC);
@@ -140,7 +145,8 @@ public class HomeActivity extends AppCompatActivity {
         if (!plainJsonString.equalsIgnoreCase("empty")) {
             Gson gson = new Gson();
             Cart cart = gson.fromJson(plainJsonString, Cart.class);
-            cartItemCount = cart.getItems().size();
+            List<CartItem> cartItems = cart.getItems();
+            cartItemCount = (cartItems != null) ? cartItems.size() : 0;
             TextView cartBadge = new TextView(this);
             cartBadge.setText(String.valueOf(cartItemCount));
             cartBadge.setTextColor(Color.WHITE);
@@ -155,11 +161,42 @@ public class HomeActivity extends AppCompatActivity {
             params.addRule(RelativeLayout.ALIGN_END, cartBtn.getId());
             params.setMargins(0, 8, 8, 0);
             ((ViewGroup) cartBtn.getParent()).addView(cartBadge, params);
+
+            // Display a notification if the cart item count has changed
+            if (cartItemCount > 0) {
+                displayCartNotification(cartItemCount);
+            }
         } else {
             TextView cartBadge = ((ViewGroup) cartBtn.getParent()).findViewById(R.id.cart_badge);
             if (cartBadge != null) {
                 ((ViewGroup) cartBtn.getParent()).removeView(cartBadge);
             }
+        }
+    }
+    private void displayCartNotification(int cartItemCount) {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setSmallIcon(R.drawable.cart)
+                .setContentTitle("Cart Update")
+                .setContentText("You have " + cartItemCount + " item(s) in your cart.")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(0, builder.build());
+    }
+
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            CharSequence name = CHANNEL_NAME;
+            String description = CHANNEL_DESC;
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
         }
     }
 }

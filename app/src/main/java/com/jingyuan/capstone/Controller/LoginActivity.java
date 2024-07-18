@@ -15,6 +15,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.jingyuan.capstone.DTO.Firebase.UserDTO;
 import com.jingyuan.capstone.R;
 import com.jingyuan.capstone.Utility.FirestoreUtilities;
@@ -41,8 +42,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-//        testUpdateUIAdmin();
-        testUpdateUI();
+//        testUpdateUI();
     }
 
     public void onSignUpBtnClick(View v) {
@@ -85,6 +85,7 @@ public class LoginActivity extends AppCompatActivity {
                                 Toast.LENGTH_SHORT).show();
                         FirebaseUser user = mAuth.getCurrentUser();
                         assert user != null;
+                        addUserToFireStore(email, user.getUid());
                         updateUI(user);
                     } else {
                         Toast.makeText(LoginActivity.this, "Authentication failed.",
@@ -124,6 +125,7 @@ public class LoginActivity extends AppCompatActivity {
                 editor.putString("pfp", userDTO.getPfp());
                 editor.apply();
                 if (userDTO.getRole().equalsIgnoreCase("store")) {
+
                     Intent i = new Intent(getApplicationContext(), StoreHomeActivity.class);
                     startActivity(i);
                 }
@@ -148,16 +150,16 @@ public class LoginActivity extends AppCompatActivity {
         finish();
     }
 
-    private void testUpdateUIAdmin() {
-        SharedPreferences sf = getSharedPreferences("my_prefs", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sf.edit();
-        editor.putString("username", "Hu Tao");
-        editor.putString("email", "hutao6969@gmail.com");
-        editor.putString("pfp", "https://firebasestorage.googleapis.com/v0/b/capstone-c62ee.appspot.com/o/avatar%2Fhutao.png?alt=media");
-        editor.putString("uid", "7oOGONkMleUrLjeylKMSl6R4pzr1");
-        editor.apply();
-        Intent i = new Intent(getApplicationContext(), StoreHomeActivity.class);
-        startActivity(i);
-        finish();
+    private void addUserToFireStore(String email, String uid) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        UserDTO user = new UserDTO();
+        user.setUsername("New User");
+        user.setPfp("https://firebasestorage.googleapis.com/v0/b/capstone-c62ee.appspot.com/o/default.jpg?alt=media");
+        user.setEmail(email);
+        user.setFcmtoken("");
+        user.setRole("customer");
+        db.collection("User").document(uid).set(user);
     }
+
+
 }

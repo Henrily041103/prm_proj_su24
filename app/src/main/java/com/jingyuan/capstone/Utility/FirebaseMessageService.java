@@ -13,7 +13,7 @@ public class FirebaseMessageService extends FirebaseMessagingService {
             String title = message.getNotification().getTitle();
             String body = message.getNotification().getBody();
 
-            NotificationHelper.displayNotification(getApplicationContext(), title, body);
+//            NotificationHelper.displayNotification(getApplicationContext(), title, body);
         }
     }
 }

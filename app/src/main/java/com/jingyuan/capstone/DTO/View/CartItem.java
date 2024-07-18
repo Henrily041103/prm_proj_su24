@@ -59,7 +59,9 @@ public class CartItem {
     public void setThumbnail(String thumbnail) {
         this.thumbnail = thumbnail;
     }
-
+    public String getPriceWithCurrency() {
+        return price + " USD";
+    }
     @NonNull
     public String toString() {
         return "\ndoc: " + doc
