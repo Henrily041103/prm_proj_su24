@@ -67,16 +67,10 @@ public class StorePrctDetailsActivity extends AppCompatActivity {
         previewThumb = findViewById(R.id.preview_thumbnail);
         updateSectionLayout = findViewById(R.id.update_layout);
 
-        db.collection("Category").get().addOnCompleteListener(task -> {
-            for (QueryDocumentSnapshot document : task.getResult()) {
-                CategoryFDTO cat = document.toObject(CategoryFDTO.class);
-                catList.add(cat);
-                catStringList.add(cat.getName());
-            }
-        });
         Intent i = getIntent();
-        assert docData != null;
+
         docData = i.getStringExtra("doc").trim();
+        assert docData != null;
         db.collection("Product").document(docData).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 DocumentSnapshot document = task.getResult();
@@ -95,6 +89,7 @@ public class StorePrctDetailsActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        setUpCategory();
         adapter = new ArrayAdapter<>(this, R.layout.category_items, catStringList);
         editProductBtn.setOnClickListener(v -> {
             switchEditMode(true);
@@ -200,5 +195,15 @@ public class StorePrctDetailsActivity extends AppCompatActivity {
             editProductBtn.setVisibility(View.VISIBLE);
             updateSectionLayout.setVisibility(View.GONE);
         }
+    }
+
+    private void setUpCategory() {
+        db.collection("Category").get().addOnCompleteListener(task -> {
+            for (QueryDocumentSnapshot document : task.getResult()) {
+                CategoryFDTO cat = document.toObject(CategoryFDTO.class);
+                catList.add(cat);
+                catStringList.add(cat.getName());
+            }
+        });
     }
 }
