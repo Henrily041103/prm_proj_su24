@@ -68,7 +68,7 @@ public class ShopActivity extends AppCompatActivity {
             startActivity(intent);
         });
         searchView = findViewById(R.id.search_view);
-        filterButton = findViewById(R.id.filter_btn);
+//        filterButton = findViewById(R.id.filter_btn);
         sortButton = findViewById(R.id.sort_btn);
         cartBtn = findViewById(R.id.cart);
         productRecyclerView = findViewById(R.id.product_recycler_view);
@@ -103,9 +103,9 @@ public class ShopActivity extends AppCompatActivity {
             }
         });
 
-        filterButton.setOnClickListener(v -> {
-            showFilterOptions();
-        });
+//        filterButton.setOnClickListener(v -> {
+//            showFilterOptions();
+//        });
 
         sortButton.setOnClickListener(v -> {
             showSortingOptions();

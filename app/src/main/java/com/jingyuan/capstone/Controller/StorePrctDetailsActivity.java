@@ -48,6 +48,7 @@ public class StorePrctDetailsActivity extends AppCompatActivity {
     Uri imageUri;
     String imageDownloadUrl, docData;
     ProductFDTO product = new ProductFDTO();
+    ImageButton backBtn;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -66,6 +67,8 @@ public class StorePrctDetailsActivity extends AppCompatActivity {
         confirmUploadBtn = findViewById(R.id.confirm_upload_image_btn);
         previewThumb = findViewById(R.id.preview_thumbnail);
         updateSectionLayout = findViewById(R.id.update_layout);
+        backBtn = findViewById(R.id.back);
+
 
         Intent i = getIntent();
 
@@ -101,7 +104,10 @@ public class StorePrctDetailsActivity extends AppCompatActivity {
             confirmUploadBtn.setVisibility(View.GONE);
             uploadImgBtn.setVisibility(View.VISIBLE);
         });
-
+        backBtn.setOnClickListener(v ->{
+            Intent i = new Intent(getApplicationContext(), StoreHomeActivity.class);
+            startActivity(i);
+        });
         launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == Activity.RESULT_OK) {
