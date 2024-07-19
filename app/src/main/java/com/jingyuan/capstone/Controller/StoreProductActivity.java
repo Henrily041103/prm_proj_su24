@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.textfield.TextInputEditText;
@@ -28,6 +29,8 @@ public class StoreProductActivity extends AppCompatActivity {
     ArrayList<String> catStringList = new ArrayList<>();
     ArrayAdapter<String> adapter;
     ProductFDTO product = new ProductFDTO();
+    ImageButton backBtn;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +42,8 @@ public class StoreProductActivity extends AppCompatActivity {
         stockInput = findViewById(R.id.product_stock_input);
         addProductBtn = findViewById(R.id.add_product_btn);
         catInput = findViewById(R.id.product_category_input);
+        backBtn = findViewById(R.id.back);
+
         db.collection("Category").get().addOnCompleteListener(task -> {
             for (QueryDocumentSnapshot document : task.getResult()) {
                 CategoryFDTO cat = document.toObject(CategoryFDTO.class);
@@ -56,6 +61,11 @@ public class StoreProductActivity extends AppCompatActivity {
         addProductBtn.setOnClickListener(v -> {
             addProduct();
         });
+        backBtn.setOnClickListener(v ->{
+            Intent i = new Intent(getApplicationContext(), StoreHomeActivity.class);
+            startActivity(i);
+        });
+
     }
 
     private void addProduct() {

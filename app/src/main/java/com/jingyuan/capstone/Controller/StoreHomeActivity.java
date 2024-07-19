@@ -50,6 +50,7 @@ public class StoreHomeActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
         setupProductList();
         addProductBtn = findViewById(R.id.add_product_btn);
         inboxBtn = findViewById(R.id.inbox_btn);
